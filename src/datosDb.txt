@@ -1,0 +1,4 @@
+password: xz8iLRklnzWQ2w7h
+user: JuanJota
+
+mongodb+srv://JuanJota:xz8iLRklnzWQ2w7h@admin-tareas.tjd6xr7.mongodb.net/
