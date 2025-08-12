@@ -11,6 +11,7 @@
     "colors": "^1.4.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
+    "express-validator": "^7.2.1",
     "mongoose": "^8.17.1"
   },
   "devDependencies": {
