@@ -1,3 +1,4 @@
+import e from "express";
 import mongoose, { Schema, Document, Types } from "mongoose";
 
 const taskStatus = {
@@ -8,10 +9,11 @@ const taskStatus = {
   COMPLETED: "completed"
 } as const;
 
+export const taskStatusEnum = Object.values(taskStatus);
 export type taskStatus = typeof taskStatus[keyof typeof taskStatus];
 
 export interface ITask extends Document {
-  nmae: string;
+  name: string;
   description: string;
   project: Types.ObjectId;
   status: taskStatus;
