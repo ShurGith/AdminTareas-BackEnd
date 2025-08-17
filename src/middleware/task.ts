@@ -20,7 +20,7 @@ export async function taskExist(req: Request, res: Response, next: NextFunction)
       req.task = task
     next();
   } catch (error) {
-    res.status(500).json({ error: "Error al validar el proyecto" });
+    res.status(500).json({ error: "Error al obtener la tarea" });
 
   }
 }
