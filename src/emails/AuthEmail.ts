@@ -29,7 +29,7 @@ export class AuthEmail {
                       Para confirmar tu cuenta, visita el  siguiente enlace:
                     </p> 
                     <div style="text-align: center; margin: 20px 0;"> 
-                      <a href=${process.env.FRONTEND_URL}/auth/confirm-account/${user.token} style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; font-weight: bold; border-radius: 5px;">
+                      <a href=${process.env.FRONTEND_URL}/auth/confirm-account style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; font-weight: bold; border-radius: 5px;">
                         Confirmar Cuenta
                       </a>
                     </div>

@@ -18,7 +18,7 @@ const TokenSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: '10m', // Token will expire after 1 hour
+    expires: '10m',
   },
 });
 
