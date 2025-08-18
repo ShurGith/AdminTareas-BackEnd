@@ -6,7 +6,7 @@ import { genterateToken } from '../utils/token';
 import { AuthEmail } from '../emails/AuthEmail';
 
 export class AuthController {
-  //^ Crear cuenta
+  //? Crear cuenta 
   static createAcount = async (req: Request, res: Response) => {
     try {
       const { password, email, name } = req.body;
@@ -27,14 +27,14 @@ export class AuthController {
       await AuthEmail.sendConfirmationEmail({ email: email, token: token.token, name: name });
       // Guardar el usuario y el token en la base de datos
       await Promise.allSettled([user.save(), token.save()]);
-      res.status(201).send("Cuenta creada correctamente, por favor confirme su cuenta en el correo electronico enviado.");
+      res.status(201).send("Cuenta creada correctamente, por favor confirme su cuenta en el email que te hemos enviado.");
       return;
     } catch (error) {
       res.status(500).json({ error: 'Internal server error' });
       return;
     }
   }
-  //^Confirmar cuenta 
+  //? Confirmar cuenta 
   static confirmAccount = async (req: Request, res: Response) => {
     try {
       const { token } = req.body;

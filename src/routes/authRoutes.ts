@@ -16,7 +16,7 @@ router.post('/create-account',
   body('password').matches(/[A-Z]/).withMessage('El Password debe contener al menos una letra en mayúscula'),
   body('password').matches(/[^a-zA-Z0-9]/).withMessage('El Password debe contener al menos un carácter especial'),
   body('password_confirmation').custom((value, {req}) => {
-    console.log(req.body.password )
+  
     if (value !== req.body.password) {
       throw new Error('Las contraseñas no coinciden');
     }
