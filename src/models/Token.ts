@@ -6,7 +6,7 @@ export interface IToken extends Document {
   createdAt: Date
 }
 
-const tokenLifetimeInSeconds = +process.env.VALIDATE_TOKEN || 600 ; // Default to 10 minutes if not set
+const tokenLifetimeInSeconds = process.env.VALIDATE_TOKEN || 600 ; // Default to 10 minutes if not set
 
 const TokenSchema = new Schema({
   token: {
@@ -20,7 +20,7 @@ const TokenSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: +tokenLifetimeInSeconds, // Default expiration time
+    expires: tokenLifetimeInSeconds, // Default expiration time
   },
 });
 
