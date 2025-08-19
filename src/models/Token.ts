@@ -1,24 +1,26 @@
-import mongoose, { Schema, Document, Types }  from "mongoose"
+import mongoose, { Schema, Document, Types } from "mongoose"
 
 export interface IToken extends Document {
   token: string
-  user: Types.ObjectId 
+  user: Types.ObjectId
   createdAt: Date
 }
+
+const tokenLifetimeInSeconds = +process.env.VALIDATE_TOKEN || 600 ; // Default to 10 minutes if not set
 
 const TokenSchema = new Schema({
   token: {
     type: String,
     required: true,
   },
-    user: {
-    type: Types.ObjectId ,
+  user: {
+    type: Types.ObjectId,
     ref: "User",
   },
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: '10m',
+    expires: +tokenLifetimeInSeconds, // Default expiration time
   },
 });
 
