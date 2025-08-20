@@ -4,6 +4,7 @@ import { hashPassword, checkPassword } from '../utils/auth';
 import Token from '../models/Token';
 import { genterateToken } from '../utils/token';
 import { AuthEmail } from '../emails/AuthEmail';
+import { generateJWT } from '../utils/jwt';
 
 export class AuthController {
   //**  Crear cuenta  **/
@@ -99,12 +100,17 @@ export class AuthController {
       }
 
       //! Revisar password no pasa   
-      const passwordMatch = await checkPassword(password, user.password);
-      if (!passwordMatch) {
-        return res.status(401).json({ error: 'Credenciales inválidas. Password incorrecto.' });
+      const isPasswordCorrect = await checkPassword(password, user.password);
+      if (!isPasswordCorrect) {
+        const error = new Error('Credenciales inválidas. Password incorrecto.');
+        return res.status(401).json({ error: error.message });
       }
-      // Si las credenciales son válidas, puedes proceder con la lógica de inicio de sesión
-      res.status(200).send('Inicio de sesión exitoso.');
+     
+      //? Generar JWT
+      const token = generateJWT({id:user._id});
+
+      res.status(200).send(token);
+
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal server error' });

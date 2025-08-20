@@ -6,10 +6,12 @@ import { TaskController } from '../controllers/TaxkController';
 import { projectExist } from '../middleware/project';
 import { taskExist } from '../middleware/task';
 import { taskStatusEnum } from '../models/Task';
+import { authenticate } from '../middleware/auth';
 
 export const router = Router();
 
 router.post('/',
+  authenticate,
   body('projectName')
     .isLength({ min: 3 })
     .withMessage('El nombre del proyecto debe tener al menos tres caracteres.'),

@@ -3,6 +3,7 @@ import Project from '../models/Project';
 export class ProjectController {
   static createProject = async (req: Request, res: Response) => {
     const project = new Project(req.body);
+    project.manager = req.user?._id; // Asignar el usuario autenticado como manager del proyecto
     try {
       await project.save();
       console.log(project);
