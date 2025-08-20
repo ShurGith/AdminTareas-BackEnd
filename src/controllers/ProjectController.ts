@@ -1,6 +1,10 @@
 import { Request, Response } from 'express';
 import Project from '../models/Project';
 export class ProjectController {
+  //& Métodos del controlador de proyectos
+  //& Estos métodos manejan las operaciones CRUD para los proyectos
+  //& Se asume que el usuario está autenticado y se asigna el manager del proyecto
+  //& al usuario autenticado que realiza la solicitud
   static createProject = async (req: Request, res: Response) => {
     const project = new Project(req.body);
     project.manager = req.user?._id; // Asignar el usuario autenticado como manager del proyecto
@@ -15,7 +19,11 @@ export class ProjectController {
 
   static getAllProjects = async (req: Request, res: Response) => {
     try {
-      const projects = await Project.find({});
+      const projects = await Project.find({
+        $or: [
+          { manager: req.user?._id }, // Proyectos en los que el usProyectos en los que el usuario está asignado a alguna tarea
+        ],
+      });
       res.json(projects);
     } catch (error) {
       console.log(error);
@@ -30,6 +38,10 @@ export class ProjectController {
         const error = new Error("Proyecto no encontrado");
         res.status(404).json({ error: error.message });
         return;
+      }
+      if (project.manager.toString() !== req.user?._id.toString()) {
+        const error = new Error("Acceso denegado");
+        return res.status(403).json({ error: error.message });
       }
       res.json(project);
     } catch (e) {
@@ -48,6 +60,11 @@ export class ProjectController {
         res.status(404).json({ error: error.message });
         return;
       }
+      if (project.manager.toString() !== req.user?._id.toString()) {
+        const error = new Error("Solo el manager del proyecto puede actualizarlo");
+        return res.status(403).json({ error: error.message });
+      }
+
       project.clientName = req.body.clientName ;
       project.projectName = req.body.projectName;
       project.description = req.body.description;
@@ -68,6 +85,10 @@ export class ProjectController {
         const error = new Error('Proyecto no encontrado');
         res.status(404).json({ error: error.message });
         return;
+      }
+      if (project.manager.toString() !== req.user?._id.toString()) {
+        const error = new Error("Solo el manager del proyecto puede eliminar el proyecto");
+        return res.status(403).json({ error: error.message });
       }
 
       await project.deleteOne();

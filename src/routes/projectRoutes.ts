@@ -10,8 +10,9 @@ import { authenticate } from '../middleware/auth';
 
 export const router = Router();
 
+router.use(authenticate);
+
 router.post('/',
-  authenticate,
   body('projectName')
     .isLength({ min: 3 })
     .withMessage('El nombre del proyecto debe tener al menos tres caracteres.'),
@@ -68,7 +69,7 @@ router.post('/:projectId/tasks',
   TaskController.createTask
 )
 
-router.get('/:projectId/tasks', 
+router.get('/:projectId/tasks',
   //projectExist,
   TaskController.getProjectTasks
 )
@@ -107,14 +108,14 @@ router.post('/:projectId/tasks/:taskId/status',
   //projectExist,
   param('projectId').isMongoId().withMessage('ID del proyecto no válido'),
   param('taskId').isMongoId().withMessage('ID de la taréa no válido'),
-  body('status')    
+  body('status')
     .notEmpty()
     .withMessage("El estado no puede estar vacío.")
     .isIn(Object.values(taskStatusEnum))
     .withMessage(`Estado inválido. Los estados válidos son: ${Object.values(taskStatusEnum).join(", ")}.`),
   handleInputErrors,
   TaskController.updateTaskStatus
-) 
+)
 
 
 export default router;
