@@ -39,7 +39,7 @@ export class AuthEmail {
                       E ingresa el siguiente código para confirmar tu cuenta:
                     </p>
                     <div style="text-align: center; font-size: 18px; font-weight: bold; margin: 20px 0;">
-                      ${user.token}
+                      ${user.token.trim()}
                     </div>
                     <p style="font-size: 16px; line-height: 1.5; color: #555;">
                       <strong>Nota:</strong> Este token expira en ${validateTokenTime} minutos.
@@ -83,7 +83,7 @@ static sendPasswordResetToken = async (user: IEmail) => {
                       También puedes ingresar el siguiente código para confirmar tu cuenta: 
                     </p>
                     <div style="text-align: center; font-size: 18px; font-weight: bold; margin: 20px 0;">
-                      ${user.token}
+                      ${user.token.trim()}
                     </div>
                     <p style="font-size: 16px; line-height: 1.5; color: #555;">
                       <strong>Nota:</strong> Este token expira en ${validateTokenTime} minutos.

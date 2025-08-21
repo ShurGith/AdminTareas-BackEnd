@@ -8,7 +8,7 @@ export type ProjectType = Document & {
 	description: string;
 	tasks: PopulatedDoc<ITask & Document>[];
 	manager: PopulatedDoc<IUser & Document>;
-
+	team: PopulatedDoc<IUser & Document>[];
 };
 
 const ProjectSchema = new Schema({
@@ -29,7 +29,7 @@ const ProjectSchema = new Schema({
 	},
 	tasks: [
 		{
-			type: Schema.Types.ObjectId,
+			type: Types.ObjectId,
 			ref: "Task"
 		}
 	],
@@ -37,7 +37,13 @@ const ProjectSchema = new Schema({
 		type: Types.ObjectId,
 		ref: "User",
 		required:true
-	}
+	},
+	team: [
+		{
+			type: Types.ObjectId,
+			ref: "User"
+		}
+	]
 },
 	{ timestamps: true }
 )

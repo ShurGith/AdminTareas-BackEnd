@@ -7,6 +7,7 @@ import { projectExist } from '../middleware/project';
 import { taskExist } from '../middleware/task';
 import { taskStatusEnum } from '../models/Task';
 import { authenticate } from '../middleware/auth';
+import { TeamMemberController } from '../controllers/TeamController';
 
 export const router = Router();
 
@@ -117,5 +118,29 @@ router.post('/:projectId/tasks/:taskId/status',
   TaskController.updateTaskStatus
 )
 
-
+router.post('/:projectId/team/find',
+  body('email')
+    .isEmail().toLowerCase()
+    .withMessage('El correo electrónico debe ser válido.'),
+  handleInputErrors,
+  TeamMemberController.findUserByEmail
+)
+router.post('/:projectId/team',
+  body('id')
+    .isMongoId().withMessage('ID de Proyecto inválido.'),
+  handleInputErrors,
+  TeamMemberController.addMemberById
+)
+router.delete('/:projectId/team',
+  body('id')
+    .isMongoId().withMessage('ID de Proyecto inválido.'),
+  handleInputErrors,
+  TeamMemberController.removeMemberById
+)
+router.get('/:projectId/team',
+  body('id')
+    .isMongoId().withMessage('ID de Proyecto inválido.'),
+  handleInputErrors,
+  TeamMemberController.getProjectTeam
+)
 export default router;

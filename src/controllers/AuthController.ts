@@ -207,4 +207,10 @@ export class AuthController {
       res.status(500).json({ error: 'Error al validar el token de recuperación de contraseña' });
     }
   }
+
+  //** Obtener usuario autenticado **//
+  static user = async (req: Request, res: Response) => {
+    return res.status(200).json(req.user);
+
+  }
 }
