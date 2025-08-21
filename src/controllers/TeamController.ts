@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/Users";
 import Project from "../models/Project";
+import { error } from "console";
 
 export class TeamMemberController {
   static async findUserByEmail(req: Request, res: Response) {
@@ -28,14 +29,22 @@ export class TeamMemberController {
     const { id } = req.body;
     const user = await User.findById(id).select('_id');
 
-    if (!user)
-      return res.status(404).json({ message: 'Usuario no encontrado.' });
+    if (!user){
+      const error =  new Error('Usuario no encontrado');
+      return res.status(404).json({ error: error.message });
+    }
 
-    if (req.project.manager.toString() === id)
-      return res.status(409).json({ message: 'El usuario es el manager del proyecto y ya es miembro del equipo.' });
+    if (req.project.manager.toString() === id){
+      const error =  new Error('El usuario es el manager y  miembro del proyecto. ');
+      return res.status(409).json({ error: error.message });
+    }
 
-    if (req.project.team.includes(id))
-      return res.status(409).json({ message: 'El usuario ya es miembro del equipo del proyecto.' });
+
+    if (req.project.team.includes(id)){
+      const error =  new Error('El usuario ya es miembro del equipo del proyecto.');
+      return res.status(409).json({ error: error.message });
+    }
+
 
     req.project.team.push(user.id);
     await req.project.save();
