@@ -98,7 +98,6 @@ router.put('/:projectId/tasks/:taskId',
 )
 
 router.delete('/:projectId/tasks/:taskId',
-  //projectExist,
   param('projectId').isMongoId().withMessage('ID del proyecto no válido'),
   param('taskId').isMongoId().withMessage('ID de la taréa no válido'),
   handleInputErrors,
@@ -106,7 +105,6 @@ router.delete('/:projectId/tasks/:taskId',
 )
 
 router.post('/:projectId/tasks/:taskId/status',
-  //projectExist,
   param('projectId').isMongoId().withMessage('ID del proyecto no válido'),
   param('taskId').isMongoId().withMessage('ID de la taréa no válido'),
   body('status')
@@ -131,16 +129,13 @@ router.post('/:projectId/team',
   handleInputErrors,
   TeamMemberController.addMemberById
 )
-router.delete('/:projectId/team',
-  body('id')
-    .isMongoId().withMessage('ID de Proyecto inválido.'),
+router.delete('/:projectId/team/:userId',
+  param('userId')
+    .isMongoId().withMessage('ID de Usuario NO válido.'),
   handleInputErrors,
   TeamMemberController.removeMemberById
 )
 router.get('/:projectId/team',
-  body('id')
-    .isMongoId().withMessage('ID de Proyecto inválido.'),
-  handleInputErrors,
   TeamMemberController.getProjectTeam
 )
 export default router;
