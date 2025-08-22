@@ -21,7 +21,8 @@ export class ProjectController {
     try {
       const projects = await Project.find({
         $or: [
-          { manager: req.user?._id }, // Proyectos en los que el usProyectos en los que el usuario está asignado a alguna tarea
+          { manager: req.user?._id }, 
+          {team : {$in : [req.user?._id]}} , 
         ],
       });
       res.json(projects);
@@ -39,13 +40,13 @@ export class ProjectController {
         res.status(404).json({ error: error.message });
         return;
       }
-      if (project.manager.toString() !== req.user?._id.toString()) {
+      if (project.manager.toString() !== req.user?._id.toString() && !project.team.includes(req.user._id)) {
         const error = new Error("Acceso denegado");
         return res.status(403).json({ error: error.message });
       }
       res.json(project);
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.log(error);
       res.status(500).json({ error: "Error al obtener el proyecto" });
     }
   }

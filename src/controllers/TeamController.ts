@@ -9,7 +9,6 @@ export class TeamMemberController {
     const user = await User.findOne({ email }).select('_id name email');
     const project = await Project.findOne({_id:projectId}).select('manager')
 
-
     if (!user) {
       const error = new Error('Usuario no encontrado.');
       res.status(404).json({ error: error.message });
@@ -25,7 +24,7 @@ export class TeamMemberController {
         select: 'id email name',
       });
 
-      res.json(project.team);
+      res.json( project.team );
     } catch (error) {
       return res.status(404).json({ error: error.message });
     }
