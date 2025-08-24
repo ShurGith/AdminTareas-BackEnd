@@ -1,7 +1,7 @@
 import e from "express";
 import mongoose, { Schema, Document, Types } from "mongoose";
 
-const taskStatus = {
+export const taskStatus = {
   PENDING: "pending",
   ON_HOLD: "onHold",
   IN_PROGRESS: "inProgress",
@@ -17,6 +17,10 @@ export interface ITask extends Document {
   description: string;
   project: Types.ObjectId;
   status: taskStatus;
+  completedBy: {
+    user: Types.ObjectId;
+    status: taskStatus;
+  }[]
 }
 
 export const TaskSchema = new Schema({
@@ -39,9 +43,21 @@ export const TaskSchema = new Schema({
     type: String,
     enum: Object.values(taskStatus),
     default: taskStatus.PENDING
-  }
-},
-  { timestamps: true }
+  },
+  completedBy: [
+    {
+      user: {
+        type: Types.ObjectId,
+        ref: "User",
+        default: null
+      },
+      status: {
+        type: String,
+        enum: Object.values(taskStatus),
+        default: taskStatus.PENDING
+      },
+    }]
+}, { timestamps: true }
 );
 
 const Task = mongoose.model<ITask>("Task", TaskSchema);

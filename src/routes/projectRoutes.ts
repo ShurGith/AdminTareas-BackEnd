@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { body, param } from 'express-validator';
 import { ProjectController } from '../controllers/ProjectController';
 import { handleInputErrors } from '../middleware/validation';
-import { TaskController } from '../controllers/TaxkController';
+import { TaskController } from '../controllers/TaskController';
 import { projectExist } from '../middleware/project';
 import { hasAthorization, taskExist } from '../middleware/task';
 import { taskStatusEnum } from '../models/Task';

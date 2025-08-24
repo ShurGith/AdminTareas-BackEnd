@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import Task from '../models/Task';
+import Task, { taskStatus } from '../models/Task';
+import { request } from 'http';
 
 
 export class TaskController {
@@ -9,9 +10,7 @@ export class TaskController {
       const newTask = new Task(req.body)
       newTask.project = req.project.id;
       req.project.tasks.push(newTask.id);
-      //& await newTask.save();//Guarda en la base de datos la tarea y el id del proyecto a la que pertenece
-      //& await req.project.save();//Guarda en la base de datos el proyecto con su nueva tarea
-      //$ Promise.allSettled espera hasta que todas las promesas se hayan cumplido o rechazado
+      
       await Promise.allSettled([req.project.save(), newTask.save()]);
 
       return res.send('Tarea creada correctamente');
@@ -34,11 +33,8 @@ export class TaskController {
 
   static getTaskById = async (req: Request, res: Response) => {
     try {
-      if(req.task.project.toString() !== req.project.id){
-        const error = new Error("La tarea no pertenece al proyecto");
-        return res.status(400).json({error: error.message});
-      }
-      res.json(req.task);
+      const task = await Task.findById(req.task.id).populate({path:"completedBy.user",select:'id name email'})
+      res.json(task);
     }
     catch (error) {
       return res.status(401).send({ message: "Error al obtener la tarea" });
@@ -69,8 +65,6 @@ export class TaskController {
         return res.status(400).json({error: error.message});
       }
       req.project.tasks = req.project.tasks.filter( task => req.task.toString() !== req.task.id.toString());
-    //  await req.project.save();
-    //  await task.deleteOne();
       await Promise.allSettled([req.project.save(), req.task.deleteOne()]);
       return res.send("Tarea eliminada correctamente");
     }catch(error){
@@ -81,20 +75,19 @@ export class TaskController {
 
   static updateTaskStatus = async (req:Request,res:Response)=>{
     try{
-      const {taskId} = req.params;
-      const {status} = req.body;
-      const task = await Task.findById(taskId);
-      task.status=status;
+      const {status} = req.body; 
+      req.task.status=status;
+      const data={
+        user:req.user.id,
+        status //El que se pasa en el request body
+      }
+  /*    if(status === taskStatus.PENDING)
+        req.task.completedBy=null;
+      else
+        req.task.completedBy = req.user.id;*/
+      req.task.completedBy.push(data);
+      await req.task.save();
 
-      if(!task){
-        const error = new Error("No existe una tarea con ese ID");
-        return res.status(404).json({error: error.message});
-      }
-      if(task.project.toString() !== req.project.id){
-        const error = new Error("La tarea no pertenece al proyecto");
-        return res.status(400).json({error: error.message});
-      }
-      await task.save();
       return res.send("Estado de la tarea actualizado correctamente");
 
     }catch(error){
@@ -102,4 +95,5 @@ export class TaskController {
       res.status(500).json({message:"Hubo un error al actualizar el estado de la tarea"})
     }
   }
+  
 }
