@@ -24,3 +24,11 @@ export async function taskExist(req: Request, res: Response, next: NextFunction)
 
   }
 }
+
+export async function hasAthorization(req: Request, res: Response, next: NextFunction) {
+  if(req.user._id.toString() !== req.project.manager.toString()) {
+    const error = new Error("No tienes permisos para editar esta tarea");
+    return res.status(401).json({ error: error.message });
+  }
+  next();
+}

@@ -4,7 +4,7 @@ import { ProjectController } from '../controllers/ProjectController';
 import { handleInputErrors } from '../middleware/validation';
 import { TaskController } from '../controllers/TaxkController';
 import { projectExist } from '../middleware/project';
-import { taskExist } from '../middleware/task';
+import { hasAthorization, taskExist } from '../middleware/task';
 import { taskStatusEnum } from '../models/Task';
 import { authenticate } from '../middleware/auth';
 import { TeamMemberController } from '../controllers/TeamController';
@@ -57,8 +57,9 @@ router.param('projectId', projectExist);
 router.param('taskId', taskExist);
 //** Se ejecuta antes que cualquier ruta con projectId. 
 //*** De esta manera se comprueba si el proyecto existe y no es necesario repetirlo en cada ruta.
-//TODO: Implementar las rutas de tareas
+
 router.post('/:projectId/tasks', 
+  hasAthorization,
   body('name')
     .isLength({ min: 3 })
     .withMessage('El nombre de la tarea debe tener al menos tres caracteres.'),
@@ -81,6 +82,7 @@ router.get('/:projectId/tasks/:taskId',
 )
 
 router.put('/:projectId/tasks/:taskId',
+  hasAthorization,
   param('projectId').isMongoId().withMessage('ID del proyecto no válido'),
   param('taskId').isMongoId().withMessage('ID de la taréa no válido'),
   body('name')
@@ -94,6 +96,7 @@ router.put('/:projectId/tasks/:taskId',
 )
 
 router.delete('/:projectId/tasks/:taskId',
+  hasAthorization,
   param('projectId').isMongoId().withMessage('ID del proyecto no válido'),
   param('taskId').isMongoId().withMessage('ID de la taréa no válido'),
   handleInputErrors,
