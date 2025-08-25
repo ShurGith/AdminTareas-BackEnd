@@ -24,6 +24,14 @@ export async function taskExist(req: Request, res: Response, next: NextFunction)
 
   }
 }
+export function taskBelongsToProject(req: Request, res: Response, next: NextFunction ) {
+    if(req.task.project.toString() !== req.project.id.toString()) {
+        const error = new Error('Acción no válida')
+        return res.status(400).json({error: error.message}) 
+    }
+    next()
+}
+
 
 export async function hasAthorization(req: Request, res: Response, next: NextFunction) {
   if(req.user._id.toString() !== req.project.manager.toString()) {

@@ -4,10 +4,11 @@ import { ProjectController } from '../controllers/ProjectController';
 import { handleInputErrors } from '../middleware/validation';
 import { TaskController } from '../controllers/TaskController';
 import { projectExist } from '../middleware/project';
-import { hasAthorization, taskExist } from '../middleware/task';
+import { hasAthorization, taskBelongsToProject, taskExist } from '../middleware/task';
 import { taskStatusEnum } from '../models/Task';
 import { authenticate } from '../middleware/auth';
 import { TeamMemberController } from '../controllers/TeamController';
+import { NoteController } from '../controllers/NoteController';
 
 export const router = Router();
 
@@ -52,9 +53,14 @@ router.delete('/:id',
   handleInputErrors,
   ProjectController.deleteProject)
 
-//** Tasks routes **//
+//& ** Tasks routes **//
 router.param('projectId', projectExist);
 router.param('taskId', taskExist);
+router.param('taskId', taskBelongsToProject);
+ //** Se ejecuta antes que cualquier ruta con taskId.
+//*** De esta manera se comprueba si la tarea existe y pertenece a un proyecto y no es necesario repetirlo en cada ruta.
+//** Se ejecuta antes que cualquier ruta con projectId.
+//*** De esta manera se comprueba si el proyecto existe y no es necesario repetirlo en cada ruta.
 //** Se ejecuta antes que cualquier ruta con projectId. 
 //*** De esta manera se comprueba si el proyecto existe y no es necesario repetirlo en cada ruta.
 
@@ -137,4 +143,27 @@ router.delete('/:projectId/team/:userId',
 router.get('/:projectId/team',
   TeamMemberController.getProjectTeam
 )
+
+//& **  Routes for notes */
+
+router.post('/:projectId/tasks/:taskId/notes',
+  body('content')
+    .isLength({ min: 10 })
+    .withMessage('La nota debe tener al menos diez caracteres.'),
+  handleInputErrors,
+  NoteController.createNote
+)
+
+router.get('/:projectId/tasks/:taskId/notes',
+  handleInputErrors,
+  NoteController.getTaskNotes
+)
+
+
+router.delete('/:projectId/tasks/:taskId/notes/:noteId',
+  param('noteId').isMongoId().withMessage('ID de Nota NO válido.'),
+  handleInputErrors,
+  NoteController.deleteNote
+)
+
 export default router;
